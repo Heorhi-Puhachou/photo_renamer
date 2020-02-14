@@ -26,35 +26,42 @@ public class App {
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
 				File file = new File(folderName + "\\" + listOfFiles[i].getName());
-				Metadata metadata = null;
-				try {
-					metadata = ImageMetadataReader.readMetadata(file);
+				renameFile(file);
+			}
+		}
+	}
 
-					Date date = new Date(0);
-					ExifSubIFDDirectory exif = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-					if (exif != null) {
-						date = exif.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss");
-						dateFormat.setTimeZone(TimeZone.getTimeZone("MSK"));
+	public static void renameFile(File file) throws IOException {
+		{
 
-						if (date != null) {
-							// ------------------------------------------------------------------------------------------
-							File newFile = new File(
-									folderName + "\\" + dateFormat.format(date) + ".JPG");
-							// ------------------------------------------------------------------------------------------
+			Metadata metadata = null;
+			try {
+				metadata = ImageMetadataReader.readMetadata(file);
 
-							System.out.println(listOfFiles[i].getName());
-							if (file.renameTo(newFile)) {
-								System.out.println("Файл переименован успешно");
-							} else {
-								System.out.println("Файл не был переименован");
-							}
+				Date date = new Date(0);
+				ExifSubIFDDirectory exif = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+				if (exif != null) {
+					date = exif.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss");
+					dateFormat.setTimeZone(TimeZone.getTimeZone("MSK"));
+
+					if (date != null) {
+						// ------------------------------------------------------------------------------------------
+						File newFile = new File(
+								file.getParent() + "\\" + dateFormat.format(date) + ".JPG");
+						// ------------------------------------------------------------------------------------------
+
+						System.out.println(file.getName());
+						if (file.renameTo(newFile)) {
+							System.out.println("Файл переименован успешно");
+						} else {
+							System.out.println("Файл не был переименован");
 						}
 					}
-				} catch (ImageProcessingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
+			} catch (ImageProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
