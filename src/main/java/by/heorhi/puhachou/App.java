@@ -1,4 +1,4 @@
-package photo_group.photoId;
+package by.heorhi.puhachou;
 
 import java.io.File;
 import java.io.IOException;

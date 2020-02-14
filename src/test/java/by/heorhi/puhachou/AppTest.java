@@ -1,4 +1,4 @@
-package photo_group.photoId;
+package by.heorhi.puhachou;;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
