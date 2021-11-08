@@ -12,50 +12,48 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 
 public class App {
-	/**
-	 * @param args
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws IOException {
 
-		String folderName = "D:\\1";
+    private static final String PHOTO_FOLDER = "D:\\1";
 
-		File folder = new File(folderName);
-		File[] listOfFiles = folder.listFiles();
+    /**
+     * @param args
+     * @throws IOException
+     */
+    public static void main(String... args) throws IOException {
+        File folder = new File(PHOTO_FOLDER);
+        File[] listOfFiles = folder.listFiles();
 
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				File file = new File(folderName + "\\" + listOfFiles[i].getName());
-				Metadata metadata = null;
-				try {
-					metadata = ImageMetadataReader.readMetadata(file);
+        for (File listOfFile : listOfFiles) {
+            if (listOfFile.isFile()) {
+                File file = new File(PHOTO_FOLDER + "\\" + listOfFile.getName());
+                try {
+                    Metadata metadata = ImageMetadataReader.readMetadata(file);
 
-					Date date = new Date(0);
-					ExifSubIFDDirectory exif = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-					if (exif != null) {
-						date = exif.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss");
-						dateFormat.setTimeZone(TimeZone.getTimeZone("MSK"));
+                    ExifSubIFDDirectory exif = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+                    if (exif != null) {
+                        Date date = exif.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss");
+                        dateFormat.setTimeZone(TimeZone.getTimeZone("MSK"));
 
-						if (date != null) {
-							// ------------------------------------------------------------------------------------------
-							File newFile = new File(
-									folderName + "\\" + dateFormat.format(date) + ".JPG");
-							// ------------------------------------------------------------------------------------------
+                        if (date != null) {
+                            // ------------------------------------------------------------------------------------------
+                            File newFile = new File(
+                                    PHOTO_FOLDER + "\\" + dateFormat.format(date) + ".JPG");
+                            // ------------------------------------------------------------------------------------------
 
-							System.out.println(listOfFiles[i].getName());
-							if (file.renameTo(newFile)) {
-								System.out.println("Файл переименован успешно");
-							} else {
-								System.out.println("Файл не был переименован");
-							}
-						}
-					}
-				} catch (ImageProcessingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+                            System.out.println(listOfFile.getName());
+                            if (file.renameTo(newFile)) {
+                                System.out.println("Пасьпяховае перайменаваньне");
+                            } else {
+                                System.out.println("Не атрымалася перайменаваць файл");
+                            }
+                        }
+                    }
+                } catch (ImageProcessingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
