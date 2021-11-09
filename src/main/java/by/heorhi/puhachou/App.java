@@ -26,18 +26,16 @@ public class App {
     }
 
     public static ExifSubIFDDirectory getExif(File photo) {
-        ExifSubIFDDirectory exif;
         try {
             Metadata metadata = ImageMetadataReader.readMetadata(photo);
-            exif = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+            return metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
         } catch (ImageProcessingException | IOException e) {
-            exif = null;
+            return null;
         }
-        return exif;
     }
 
-    public static boolean hasExifAndDate(File photo) {
-        return getExif(photo) != null && getExif(photo).getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL) != null;
+    public static boolean hasExifAndDate(File file) {
+        return getExif(file) != null && getExif(file).getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL) != null;
     }
 
     public static String formatDate(Date date) {
@@ -46,10 +44,10 @@ public class App {
         return dateFormat.format(date);
     }
 
-    public static void rename(File oldNamePhoto) {
-        ExifSubIFDDirectory exif = getExif(oldNamePhoto);
+    public static void rename(File oldName) {
+        ExifSubIFDDirectory exif = getExif(oldName);
         Date date = exif.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-        File newNamePhoto = new File(PHOTO_FOLDER + "\\" + formatDate(date) + ".JPG");
-        oldNamePhoto.renameTo(newNamePhoto);
+        File newName = new File(PHOTO_FOLDER + "\\" + formatDate(date) + ".JPG");
+        oldName.renameTo(newName);
     }
 }
