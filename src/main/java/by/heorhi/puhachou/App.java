@@ -15,6 +15,7 @@ import java.util.TimeZone;
 public class App {
 
     private static final String PHOTO_FOLDER = "D:\\1";
+    private static final String DESCRIPTION = "Охота на лис. Брест";
 
     public static void main(String... args) {
         File folder = new File(PHOTO_FOLDER);
@@ -47,7 +48,16 @@ public class App {
     public static void rename(File oldName) {
         ExifSubIFDDirectory exif = getExif(oldName);
         Date date = exif.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-        File newName = new File(PHOTO_FOLDER + "\\" + formatDate(date) + ".JPG");
+        File newName = new File(PHOTO_FOLDER
+                + "\\"
+                + formatDate(date)
+                + DESCRIPTION
+                + "."
+                + getExtension(oldName));
         oldName.renameTo(newName);
+    }
+
+    public static String getExtension(File file) {
+        return file.getName().substring(file.getName().lastIndexOf('.') + 1);
     }
 }
